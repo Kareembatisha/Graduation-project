@@ -1,7 +1,8 @@
+import express from 'express';
 import bcrypt from 'bcrypt';
 import { validation } from '../../validation/validation.js';
-import { newCustomerSchema, updateCustomerSchema } from './customerValidation.js';
 import customerModel from '../../../db/models/customerModel.js';
+import { newCustomerSchema, updateCustomerSchema } from './cutomerValidation.js';
 
 const customerRoutes = express.Router();
 
@@ -29,7 +30,7 @@ customerRoutes.post("/signup", validation(newCustomerSchema), async (req, res) =
     }
 });
 
-customerRoutes.post("/signin", validation(signinSchema), async (req, res) => {
+customerRoutes.post("/signin", async (req, res) => {
     try {
         const { email, password } = req.body;
         const found = await customerModel.findOne({ email });
@@ -51,7 +52,7 @@ customerRoutes.post("/signin", validation(signinSchema), async (req, res) => {
     }
 });
 
-customerRoutes.patch("/customer/update/:name", validation(updateCustomerSchema), async (req, res) => {
+customerRoutes.patch("/updateCustomer/:name", validation(updateCustomerSchema), async (req, res) => {
     try {
         const found = await customerModel.findOne({ name: req.params.name });
         
@@ -70,9 +71,9 @@ customerRoutes.patch("/customer/update/:name", validation(updateCustomerSchema),
         const updatedCustomer = await customerModel.findByIdAndUpdate(found._id, {
             name: req.body.name,
             email: req.body.email,
-            password: hashedNewPassword,
-            role: req.body.role,
-            addresses: req.body.addresses 
+            password: hashedPassword,
+            address: req.body.address,
+            phones: req.body.phones
         }, { new: true });
 
         res.status(200).json({ message: "Found and updated customer", updatedCustomer });
@@ -82,31 +83,15 @@ customerRoutes.patch("/customer/update/:name", validation(updateCustomerSchema),
     }
 });
 
-customerRoutes.delete("/customer/:name", async (req, res) => {
+customerRoutes.delete("/deleteCustomer/:email", async (req, res) => {
     try {
-        const name = req.params.name;
-        const password = req.body.password;
-        const repeatPassword = req.body.repeatPassword;
-
-        if (password !== repeatPassword) {
-            return res.status(400).json({ message: "Passwords do not match" });
+        const email = req.params.email;
+        const deletedCustomer = await customerModel.findOneAndDelete({email});
+        if(deletedCustomer){
+            res.status(200).json({ message: "Found and deleted customer", deletedCustomer });
+        }else{
+            res.status(404).json({ message: "Customer Not found"});
         }
-
-        const found = await customerModel.findOne({ name });
-
-        if (!found) {
-            return res.status(404).json({ message: "Customer not found" });
-        }
-
-        const correctPassword = await bcrypt.compare(password, found.password);
-
-        if (!correctPassword) {
-            return res.status(401).json({ message: "Incorrect password" });
-        }
-
-        const deletedCustomer = await customerModel.findByIdAndDelete(found._id);
-
-        res.status(200).json({ message: "Found and deleted customer", deletedCustomer });
     } catch (error) {
         console.error("Error deleting customer:", error);
         res.status(500).json({ message: "An error occurred while deleting the customer" });

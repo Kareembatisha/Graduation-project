@@ -6,7 +6,7 @@ export const newCategorySchema = Joi.object({
 })
 
 export const updateCategorySchema = Joi.object({
-    name: Joi.forbidden(),
-    image: Joi.string().uri().required(),
+    name: Joi.string(),
+    image: Joi.string().uri()
 
 })

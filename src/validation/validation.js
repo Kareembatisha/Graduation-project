@@ -14,8 +14,6 @@ export const validateCategory = async (req, res, next) => {
     }
 };
 
-
-
 export const validation = (Schema)=>{
     return (req , res , next) => {
         let check = Schema.validate(req.body,{abortEarly:false});
@@ -25,5 +23,7 @@ export const validation = (Schema)=>{
             next()
         }
     }
-} 
+}
+
+
 

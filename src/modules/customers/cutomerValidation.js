@@ -15,12 +15,12 @@ export const newCustomerSchema = Joi.object({
 })
 
 export const updateCustomerSchema = Joi.object({
-    name:Joi.string().forbidden(),
-    email:Joi.string().forbidden(),
+    name:Joi.string(),
+    email:Joi.string().forbidden(),//متحطهمش فى الموديل بتاع ال update
     password:Joi.string().min(8).max(20).required(),
     newPassword:Joi.string().min(8).max(20),
     address: Joi.object({
-        city: Joi.string().required(),
+        city: Joi.string().valid("Cairo","Giza").required(),
         street: Joi.string().required(),
         buildingNumber: Joi.string().required(),
         floor: Joi.string(),

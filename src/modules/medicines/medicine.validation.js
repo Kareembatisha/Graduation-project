@@ -15,13 +15,13 @@ export const newMedicineSchema = Joi.object({
 
 export const updateMedicineSchema = Joi.object({
     name: Joi.string(),
-    concentration: Joi.forbidden(),
+    concentration: Joi.forbidden(),//متحطهمش فى الموديل بتاع ال update
     price: Joi.number().min(0),
     image: Joi.string().uri(),
     mfgDate: Joi.date(),
     expDate: Joi.date(),
     company: Joi.string(),
-    activeSubstance: Joi.forbidden(),
-    category: Joi.forbidden(),
+    activeSubstance: Joi.forbidden(),//متحطهمش فى الموديل بتاع ال update
+    category: Joi.forbidden(),//متحطهمش فى الموديل بتاع ال update
     stock: Joi.number().integer().min(0),
 })
