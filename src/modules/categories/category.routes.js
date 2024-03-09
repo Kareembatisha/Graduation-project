@@ -1,13 +1,25 @@
 import express from 'express';
+import multer from 'multer';
 import { validation } from '../../validation/validation.js';
 import categoryModel from '../../../db/models/categoryModel.js';
 import { newCategorySchema, updateCategorySchema } from './categoryValidation.js';
 
 const categoryRoutes = express.Router();
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname)
+    }
+})
+const upload = multer({ storage: storage })
 
-categoryRoutes.post("/addCategory", validation(newCategorySchema), async (req, res) => {
+categoryRoutes.post("/addCategory", upload.single('image'), validation(newCategorySchema), async (req, res) => {
     try {
-        const { name, image } = req.body;
+        const { name } = req.body;
+        const image = req.file.path;
+
         const updatedCategory = await categoryModel.findOneAndUpdate(
             { name },
             { name, image },
@@ -24,12 +36,12 @@ categoryRoutes.post("/addCategory", validation(newCategorySchema), async (req, r
 
 categoryRoutes.patch("/updateCategory/:name", validation(updateCategorySchema), async (req, res) => {
     try {
-        const name = req.params.name;
-        const { image } = req.body;
+        const search = req.params.name;
+        const { name, image } = req.body;
 
         const updatedCategory = await categoryModel.findOneAndUpdate(
-            { name },
-            { image },
+            { name:search },
+            { name, image },
             { new: true }
         );
 

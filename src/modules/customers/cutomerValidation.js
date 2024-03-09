@@ -5,13 +5,14 @@ export const newCustomerSchema = Joi.object({
     email:Joi.string().required(),
     password:Joi.string().min(8).max(20).required(),
     address: Joi.object({
-        city: Joi.string().required(),
+        city: Joi.string().valid("Cairo","Giza").required(),
         street: Joi.string().required(),
         buildingNumber: Joi.string().required(),
         floor: Joi.string(),
         apartmentNumber: Joi.string()
     }).required(),
-    phones:Joi.array().items(Joi.string().regex(/^01[0125][0-9]{8}$/)).required()
+    phones:Joi.array().items(Joi.string().regex(/^01[0125][0-9]{8}$/)).required(),
+    TOKEN: Joi.string().forbidden(),  
 })
 
 export const updateCustomerSchema = Joi.object({
@@ -26,5 +27,7 @@ export const updateCustomerSchema = Joi.object({
         floor: Joi.string(),
         apartmentNumber: Joi.string()
     }),
-    phones:Joi.array().items(Joi.string().regex(/^01[0125][0-9]{8}$/))
+    phones:Joi.array().items(Joi.string().regex(/^01[0125][0-9]{8}$/)),
+    TOKEN: Joi.string().forbidden(),  
+
 })

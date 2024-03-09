@@ -1,16 +1,24 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
+import 'dotenv/config'
+import jwt from "jsonwebtoken";
 import { validation } from '../../validation/validation.js';
 import customerModel from '../../../db/models/customerModel.js';
 import { newCustomerSchema, updateCustomerSchema } from './cutomerValidation.js';
 
 const customerRoutes = express.Router();
 
+const secretKey = process.env.JWT_SECRET_KEY
+
+const generateToken = (id)=>{
+    return jwt.sign({id},secretKey);
+    // return jwt.sign({id},secretKey,{expiresIn:"1h"});
+}
+
 customerRoutes.post("/signup", validation(newCustomerSchema), async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         const existingCustomer = await customerModel.findOne({ email: req.body.email });
-
         if (existingCustomer) {
             return res.status(400).json({ message: "Customer already registered" });
         }
@@ -45,6 +53,10 @@ customerRoutes.post("/signin", async (req, res) => {
             return res.status(401).json({ message: "Invalid email or password" });
         }
 
+        const TOKEN = generateToken(found._id)
+        found.TOKEN = TOKEN
+        await found.save();
+
         res.status(200).json({ message: "Customer found", found });
     } catch (error) {
         console.error("Error signing in customer:", error);
@@ -52,9 +64,28 @@ customerRoutes.post("/signin", async (req, res) => {
     }
 });
 
-customerRoutes.patch("/updateCustomer/:name", validation(updateCustomerSchema), async (req, res) => {
+customerRoutes.get("/logout/:email", async (req, res) => {
     try {
-        const found = await customerModel.findOne({ name: req.params.name });
+        const email = req.params.email;
+        const found = await customerModel.findOne({ email });
+
+        if (!found) {
+            return res.status(404).json({ message: "Not found" });
+        }
+
+        found.TOKEN = undefined;
+        await found.save();
+
+        res.status(200).json({ message: "Customer logged out successfully" });
+    } catch (error) {
+        console.error("Error logging out:", error);
+        res.status(500).json({ message: "An error occurred while logging out" });
+    }
+});
+
+customerRoutes.patch("/updateCustomer/:email", validation(updateCustomerSchema), async (req, res) => {
+    try {
+        const found = await customerModel.findOne({ email: req.params.email });
         
         if (!found) {
             return res.status(404).json({ message: "Customer not found" });
@@ -70,8 +101,7 @@ customerRoutes.patch("/updateCustomer/:name", validation(updateCustomerSchema), 
 
         const updatedCustomer = await customerModel.findByIdAndUpdate(found._id, {
             name: req.body.name,
-            email: req.body.email,
-            password: hashedPassword,
+            password: hashedNewPassword,
             address: req.body.address,
             phones: req.body.phones
         }, { new: true });
@@ -121,7 +151,7 @@ customerRoutes.get("/getAllCustomers", async (req, res) => {
         if (found.length > 0) {
             return res.status(200).json({ message: "All customers", customers: found });
         } else {
-            return res.status(404).json({ message: "There are no customers" });
+            return res.status(404).json({ message: "There are no customers found" });
         }
     } catch (error) {
         console.error("Error fetching all customers:", error);

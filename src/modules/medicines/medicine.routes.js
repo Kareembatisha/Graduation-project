@@ -2,6 +2,8 @@ import express from 'express';
 import { newMedicineSchema, updateMedicineSchema } from './medicine.validation.js';
 import medicineModel from '../../../db/models/medicineModel.js';
 import { validateCategory, validation } from '../../validation/validation.js';
+import 'dotenv/config'
+
 
 const medicineRoutes = express.Router();
 
@@ -60,7 +62,7 @@ medicineRoutes.delete("/deleteMedicine/:name", async (req, res) => {
 medicineRoutes.get("/getAllMedicines", async (req, res) => {
     try {
         const allMedicines = await medicineModel.find().lean();
-
+        
         if (allMedicines.length > 0) {
             res.json({ message: "Medicines found", allMedicines });
         } else {

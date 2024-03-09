@@ -14,6 +14,7 @@ let customerSchema = new mongoose.Schema({
     password: { type: String },
     address: { type: addressSchema },
     phones: [{ type: String }],
+    TOKEN: { type: String}
 }) 
 const customerModel = mongoose.model('Customer', customerSchema)
 export default customerModel ;
