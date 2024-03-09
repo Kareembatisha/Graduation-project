@@ -14,6 +14,7 @@ let doctorSchema = new mongoose.Schema({
     // image: { type: String },
     // graduationInformation: { type: gradInfo },
     // phones: [{ type: String }],
+    TOKEN: { type: String}
 }) 
 const doctorModel = mongoose.model('Doctor', doctorSchema)
 export default doctorModel ;

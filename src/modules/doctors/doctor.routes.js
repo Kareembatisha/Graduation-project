@@ -1,10 +1,19 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
+import 'dotenv/config'
+import jwt from "jsonwebtoken";
 import { validation } from '../../validation/validation.js';
 import doctorModel from '../../../db/models/doctorModel.js';
 import { newDoctorSchema, updateDoctorSchema } from './doctorValidation.js';
 
 const doctorRoutes = express.Router();
+
+const secretKey = process.env.JWT_SECRET_KEY
+
+const generateToken = (id)=>{
+    return jwt.sign({id},secretKey);
+    // return jwt.sign({id},secretKey,{expiresIn:"1h"});
+}
 
 doctorRoutes.post("/doctor/signup", validation(newDoctorSchema), async (req, res) => {
     try {
@@ -46,10 +55,33 @@ doctorRoutes.post("/doctor/signin", async (req, res) => {
             return res.status(401).json({ message: "Invalid email or password" });
         }
 
-        res.status(200).json({ message: "doctor found", found });
+        const TOKEN = generateToken(found._id)
+        found.TOKEN = TOKEN
+        await found.save();
+
+        res.status(200).json({ message: "doctor found", found , TOKEN });
     } catch (error) {
         console.error("Error signing in doctor:", error);
         res.status(500).json({ message: "An error occurred while signing in the doctor" });
+    }
+});
+
+doctorRoutes.get("/doctor/logout/:email", async (req, res) => {
+    try {
+        const email = req.params.email;
+        const found = await doctorModel.findOne({ email });
+
+        if (!found) {
+            return res.status(404).json({ message: "Not found" });
+        }
+
+        found.TOKEN = undefined;
+        await found.save();
+
+        res.status(200).json({ message: "Doctor logged out successfully" });
+    } catch (error) {
+        console.error("Error logging out:", error);
+        res.status(500).json({ message: "An error occurred while logging out" });
     }
 });
 

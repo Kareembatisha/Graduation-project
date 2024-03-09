@@ -57,7 +57,7 @@ customerRoutes.post("/signin", async (req, res) => {
         found.TOKEN = TOKEN
         await found.save();
 
-        res.status(200).json({ message: "Customer found", found });
+        res.status(200).json({ message: "Customer found", found , TOKEN });
     } catch (error) {
         console.error("Error signing in customer:", error);
         res.status(500).json({ message: "An error occurred while signing in the customer" });
