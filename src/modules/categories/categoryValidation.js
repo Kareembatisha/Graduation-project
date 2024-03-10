@@ -2,7 +2,7 @@ import Joi from 'joi'
 
 export const newCategorySchema = Joi.object({
     name: Joi.string().required(),
-    image: Joi.string().uri().required(),
+    image: Joi.string().uri(),
 })
 
 export const updateCategorySchema = Joi.object({

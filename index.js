@@ -10,6 +10,7 @@ import orderRoutes from './src/modules/orders/order.routes.js';
 
 initConnection();
 const server = express();
+server.use("/uploads", express.static("uploads"))
 server.use(express.json())
 server.use(medicineRoutes)
 server.use(categoryRoutes)

@@ -15,10 +15,10 @@ const storage = multer.diskStorage({
 })
 const upload = multer({ storage: storage })
 
-categoryRoutes.post("/addCategory", upload.single('image'), validation(newCategorySchema), async (req, res) => {
+categoryRoutes.post("/addCategory", upload.single('image'), validation(newCategorySchema),async (req, res) => {
     try {
         const { name } = req.body;
-        const image = req.file.path;
+        const image = "http://localhost:3000/uploads/"+req.file.filename;
 
         const updatedCategory = await categoryModel.findOneAndUpdate(
             { name },
