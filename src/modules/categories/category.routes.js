@@ -17,17 +17,18 @@ const upload = multer({ storage: storage })
 
 categoryRoutes.post("/addCategory", upload.single('image'), validation(newCategorySchema),async (req, res) => {
     try {
-        const { name } = req.body;
+        const name = req.body.name;
         const image = "http://localhost:3000/uploads/"+req.file.filename;
-
-        const updatedCategory = await categoryModel.findOneAndUpdate(
-            { name },
-            { name, image },
-            { upsert: true, new: true }
-        );
-
-        const message = updatedCategory._id ? "Category updated successfully" : "Category added successfully";
-        res.status(200).json({ message, updatedCategory });
+        let found = await categoryModel.findOne({name})
+        if (found) {
+            res.status(200).json({ message:"Category already exists"});
+        }else{
+            let newCategory = await categoryModel.create({
+                name:name,
+                image:image
+            })
+            res.status(200).json({ message:"Category Added Successfully", newCategory });
+        }
     } catch (error) {
         console.error("Error adding/updating category:", error);
         res.status(500).json({ message: "An error occurred while adding/updating the category" });
