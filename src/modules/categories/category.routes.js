@@ -35,14 +35,14 @@ categoryRoutes.post("/addCategory", upload.single('image'), validation(newCatego
     }
 });
 
-categoryRoutes.patch("/updateCategory/:name", validation(updateCategorySchema), async (req, res) => {
+categoryRoutes.patch("/updateCategory/:name", upload.single('image'), validation(updateCategorySchema), async (req, res) => {
     try {
-        const search = req.params.name;
-        const { name, image } = req.body;
+        const name = req.params.name;
+        const image = "http://localhost:3000/uploads/"+req.file.filename;
 
         const updatedCategory = await categoryModel.findOneAndUpdate(
-            { name:search },
-            { name, image },
+            { name },
+            { image },
             { new: true }
         );
 

@@ -2,7 +2,7 @@ import Joi from 'joi'
 
 const itemSchema = Joi.object({
     itemId: Joi.string().required(),
-    quantity: Joi.number().required()
+    quantity: Joi.number().required(),
 });
 
 export const newCartSchema = Joi.object({

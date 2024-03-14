@@ -7,7 +7,8 @@ const orderRoutes = express.Router();
 
 orderRoutes.post("/addOrder", validation(newOrderSchema), async (req, res) => {
     try {
-        const { customerId, items, total, status } = req.body;
+        const { customerId, items, total } = req.body;
+        let status = "pending";
         const newOrder = await orderModel.create({ customerId, items, total, status });
         res.status(201).json({ message: "Order added successfully", newOrder });
     } catch (error) {
