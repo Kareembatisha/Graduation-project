@@ -56,10 +56,10 @@ doctorRoutes.post("/doctor/signin", async (req, res) => {
         }
 
         const TOKEN = generateToken(found._id)
-        found.TOKEN = TOKEN
-        await found.save();
 
-        res.status(200).json({ message: "doctor found", found , TOKEN });
+        res.header("token", TOKEN);
+
+        res.status(200).json({ message: "doctor found", found  });
     } catch (error) {
         console.error("Error signing in doctor:", error);
         res.status(500).json({ message: "An error occurred while signing in the doctor" });

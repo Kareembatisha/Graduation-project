@@ -12,8 +12,6 @@ export const newDoctorSchema = Joi.object({
 //         year: Joi.number().max(2024).min(1950).required(),   
 //     }).required(),
 //     phones:Joi.array().items(Joi.string().regex(/^01[0125][0-9]{8}$/)).required()
-    TOKEN: Joi.string().forbidden(),  
-
 })
 
 export const updateDoctorSchema = Joi.object({
@@ -28,6 +26,4 @@ export const updateDoctorSchema = Joi.object({
     //     year: Joi.string().max(2024).min(1950).required(),
     // }),
     // phones:Joi.array().items(Joi.string().regex(/^01[0125][0-9]{8}$/))
-    TOKEN: Joi.string().forbidden(),  
-
 })
