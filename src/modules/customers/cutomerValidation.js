@@ -12,7 +12,6 @@ export const newCustomerSchema = Joi.object({
         apartmentNumber: Joi.string()
     }).required(),
     phones:Joi.array().items(Joi.string().regex(/^01[0125][0-9]{8}$/)).required(),
-    TOKEN: Joi.string().forbidden(),  
 })
 
 export const updateCustomerSchema = Joi.object({
@@ -28,6 +27,5 @@ export const updateCustomerSchema = Joi.object({
         apartmentNumber: Joi.string()
     }),
     phones:Joi.array().items(Joi.string().regex(/^01[0125][0-9]{8}$/)),
-    TOKEN: Joi.string().forbidden(),  
 
 })

@@ -54,8 +54,8 @@ customerRoutes.post("/signin", async (req, res) => {
         }
 
         const TOKEN = generateToken(found._id)
-        found.TOKEN = TOKEN
-        await found.save();
+        
+        res.header("token", TOKEN);
 
         res.status(200).json({ message: "Customer found", found , TOKEN });
     } catch (error) {
