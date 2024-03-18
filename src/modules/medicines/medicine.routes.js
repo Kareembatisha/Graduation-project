@@ -4,7 +4,8 @@
     import medicineModel from '../../../db/models/medicineModel.js';
     import {  validation } from '../../validation/validation.js';
     import 'dotenv/config'
-import categoryModel from '../../../db/models/categoryModel.js';
+    
+    import categoryModel from '../../../db/models/categoryModel.js';
 
 
     const medicineRoutes = express.Router();

@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import initConnection from "./db/initConnection.js";
 import medicineRoutes from './src/modules/medicines/medicine.routes.js';
 import categoryRoutes from './src/modules/categories/category.routes.js';
@@ -11,6 +12,9 @@ import prescriptionRoutes from './src/modules/prescriptions/prescription.routes.
 
 initConnection();
 const server = express();
+
+server.use(cors());
+
 server.use("/uploads", express.static("uploads"))
 server.use(express.json())
 server.use(medicineRoutes)
@@ -24,4 +28,4 @@ server.use(prescriptionRoutes)
 server.use(serviceRoutes)
 
 server.listen(3000);
-export default server
+export default server;

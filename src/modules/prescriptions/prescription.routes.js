@@ -22,7 +22,7 @@ prescriptionRoutes.post("/addPrescription/:id", validation(newPresriptionSchema)
     }
 });
 
-prescriptionRoutes.patch("/updatePrescription/:id", validation(updatePrescriptionSchema), async (req, res) => {
+prescriptionRoutes.patch("/updatePrescription/:id", async (req, res) => {
     try {
         const found = await prescriptionModel.findByIdAndUpdate(req.params.id,{
             message: req.body.message
