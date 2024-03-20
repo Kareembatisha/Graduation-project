@@ -10,8 +10,8 @@ const customerRoutes = express.Router();
 
 const secretKey = process.env.JWT_SECRET_KEY
 
-const generateToken = (id)=>{
-    return jwt.sign({id},secretKey);
+const generateToken = (email)=>{
+    return jwt.sign({email},secretKey);
     // return jwt.sign({id},secretKey,{expiresIn:"1h"});
 }
 
@@ -53,7 +53,7 @@ customerRoutes.post("/signin", async (req, res) => {
             return res.status(401).json({ message: "Invalid email or password" });
         }
 
-        const TOKEN = generateToken(found._id)
+        const TOKEN = generateToken(found.email)
         
         res.header("token", TOKEN);
 
