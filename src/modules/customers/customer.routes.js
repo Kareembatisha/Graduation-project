@@ -28,7 +28,7 @@ customerRoutes.post("/signup", validation(newCustomerSchema), async (req, res) =
             email: req.body.email,
             password: hashedPassword,
             address: req.body.address,
-            phones: req.body.phones
+            phone: req.body.phone
         });
 
         res.status(201).json({ message: "Customer added", newCustomer });
