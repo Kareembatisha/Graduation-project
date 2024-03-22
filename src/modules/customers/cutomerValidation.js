@@ -16,4 +16,4 @@ export const updateCustomerSchema = Joi.object({
     address: Joi.string(),
     phone:Joi.string().regex(/^01[0125][0-9]{8}$/),
 
-})git a
+})

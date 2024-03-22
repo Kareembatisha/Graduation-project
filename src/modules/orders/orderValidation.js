@@ -6,15 +6,15 @@ const itemSchema = Joi.object({
 });
 
 export const newOrderSchema = Joi.object({
-    customerId: Joi.string().required(),
+    customerEmail: Joi.string().required(),
     items: Joi.array().items(itemSchema.required()),
     total: Joi.number().forbidden(),
     status: Joi.string().valid("pending", "approved", "denied").default("pending").forbidden(),
 });
 
 export const updateOrderSchema = Joi.object({
-    customerId: Joi.string().forbidden(),
+    customerEmail: Joi.string().forbidden(),
     items: Joi.array().items(itemSchema.required()),
     total: Joi.number().forbidden(),
-    status: Joi.string().valid("pending", "approved", "denied"),
+    status: Joi.string().valid("pending", "approved", "denied").forbidden(),
 });
