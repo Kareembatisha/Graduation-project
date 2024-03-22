@@ -81,11 +81,24 @@ orderRoutes.patch("/acceptOrder/:orderId", async (req, res) => {
     try {
         const orderId = req.params.orderId;
         const updatedOrder = await orderModel.findByIdAndUpdate(orderId, { status: "accepted" }, { new: true });
-        if (updatedOrder) {
-            res.status(200).json({ message: "Order accepted successfully", updatedOrder });
-        } else {
-            res.status(404).json({ message: "Order not found" });
+        if (!updatedOrder) {
+            return res.status(404).json({ message: "Order not found" });
         }
+        
+        const items = updatedOrder.items;
+        
+        for (const item of items) {
+            const itemId = item.itemID;
+            const quantity = item.quantity;
+            const medicine = await medicineModel.findById(itemId);
+            if (!medicine) {
+                return res.status(404).json({ message: "Medicine not found" });
+            }
+            medicine.stock -= quantity;
+            await medicine.save();
+        }
+        
+        res.status(200).json({ message: "Order accepted successfully", updatedOrder });
     } catch (error) {
         console.error("Error accepting order:", error);
         res.status(500).json({ message: "An error occurred while accepting the order" });
