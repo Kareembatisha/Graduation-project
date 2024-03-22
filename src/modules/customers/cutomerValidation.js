@@ -14,6 +14,6 @@ export const updateCustomerSchema = Joi.object({
     password:Joi.string().min(8).max(20).required(),
     newPassword:Joi.string().min(8).max(20),
     address: Joi.string(),
-    phones:Joi.array().items(Joi.string().regex(/^01[0125][0-9]{8}$/)),
+    phone:Joi.string().regex(/^01[0125][0-9]{8}$/),
 
 })

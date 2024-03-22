@@ -5,7 +5,7 @@ let customerSchema = new mongoose.Schema({
     email: { type: String },
     password: { type: String },
     address: { type: String },
-    phones: [{ type: String }],
+    phone: { type: String },
 }) 
 const customerModel = mongoose.model('Customer', customerSchema)
 export default customerModel ;

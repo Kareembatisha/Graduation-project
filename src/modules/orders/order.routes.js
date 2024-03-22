@@ -7,9 +7,9 @@ const orderRoutes = express.Router();
 
 orderRoutes.post("/addOrder", validation(newOrderSchema), async (req, res) => {
     try {
-        const { customerId, items, total } = req.body;
+        const { customerEmail, items, total } = req.body;
         let status = "pending";
-        const newOrder = await orderModel.create({ customerId, items, total, status });
+        const newOrder = await orderModel.create({ customerEmail, items, total, status });
         res.status(201).json({ message: "Order added successfully", newOrder });
     } catch (error) {
         console.error("Error adding order:", error);
@@ -20,8 +20,8 @@ orderRoutes.post("/addOrder", validation(newOrderSchema), async (req, res) => {
 orderRoutes.patch("/updateOrder/:orderId", validation(updateOrderSchema), async (req, res) => {
     try {
         const orderId = req.params.orderId;
-        const { items, status } = req.body;
-        const updatedOrder = await orderModel.findByIdAndUpdate(orderId, { items, status }, { new: true });
+        const { items, total } = req.body;
+        const updatedOrder = await orderModel.findByIdAndUpdate(orderId, { items, total }, { new: true });
         if (updatedOrder) {
             res.status(200).json({ message: "Order updated successfully", updatedOrder });
         } else {
@@ -74,6 +74,36 @@ orderRoutes.get("/getOrderById/:orderId", async (req, res) => {
     } catch (error) {
         console.error("Error fetching order:", error);
         res.status(500).json({ message: "An error occurred while fetching the order" });
+    }
+});
+
+orderRoutes.patch("/acceptOrder/:orderId", async (req, res) => {
+    try {
+        const orderId = req.params.orderId;
+        const updatedOrder = await orderModel.findByIdAndUpdate(orderId, { status: "accepted" }, { new: true });
+        if (updatedOrder) {
+            res.status(200).json({ message: "Order accepted successfully", updatedOrder });
+        } else {
+            res.status(404).json({ message: "Order not found" });
+        }
+    } catch (error) {
+        console.error("Error accepting order:", error);
+        res.status(500).json({ message: "An error occurred while accepting the order" });
+    }
+});
+
+orderRoutes.patch("/denyOrder/:orderId", async (req, res) => {
+    try {
+        const orderId = req.params.orderId;
+        const updatedOrder = await orderModel.findByIdAndUpdate(orderId, { status: "denied" }, { new: true });
+        if (updatedOrder) {
+            res.status(200).json({ message: "Order denied successfully", updatedOrder });
+        } else {
+            res.status(404).json({ message: "Order not found" });
+        }
+    } catch (error) {
+        console.error("Error denying order:", error);
+        res.status(500).json({ message: "An error occurred while denying the order" });
     }
 });
 
