@@ -79,6 +79,22 @@ orderRoutes.get("/getOrderById/:orderId", async (req, res) => {
     }
 });
 
+orderRoutes.get("/getAllOrdersByCustomerId/:customerId", async (req, res) => {
+    try {
+        const customerId = req.params.customerId;
+        const allOrders = await orderModel.find({ customerEmail: customerId }).lean();
+        if (allOrders.length > 0) {
+            res.status(200).json({ message: "Orders found", allOrders });
+        } else {
+            res.status(404).json({ message: "No orders found for this customer" });
+        }
+    } catch (error) {
+        console.error("Error fetching orders:", error);
+        res.status(500).json({ message: "An error occurred while fetching orders" });
+    }
+});
+
+
 orderRoutes.patch("/acceptOrder/:orderId", async (req, res) => {
     try {
         const orderId = req.params.orderId;

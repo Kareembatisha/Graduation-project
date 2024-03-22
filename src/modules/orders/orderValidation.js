@@ -17,6 +17,6 @@ export const updateOrderSchema = Joi.object({
     customerEmail: Joi.string().forbidden(),
     items: Joi.array().items(itemSchema.required()),
     total: Joi.string(),
-    total: Joi.number().forbidden(),
+    total: Joi.number(),
     status: Joi.string().valid("pending", "approved", "denied").forbidden(),
 });
