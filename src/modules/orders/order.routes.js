@@ -6,6 +6,7 @@ import medicineModel from '../../../db/models/medicineModel.js';
 
 const orderRoutes = express.Router();
 
+
 orderRoutes.post("/addOrder", validation(newOrderSchema), async (req, res) => {
     try {
         const { customerEmail, items, address, total } = req.body;
@@ -89,9 +90,9 @@ orderRoutes.patch("/acceptOrder/:orderId", async (req, res) => {
         const items = updatedOrder.items;
         
         for (const item of items) {
-            const itemId = item.itemID;
+            const name = item.name;
             const quantity = item.quantity;
-            const medicine = await medicineModel.findById(itemId);
+            const medicine = await medicineModel.findOne({name});
             if (!medicine) {
                 return res.status(404).json({ message: "Medicine not found" });
             }
