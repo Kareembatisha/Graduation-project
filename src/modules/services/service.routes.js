@@ -7,29 +7,29 @@ const serviceRoutes = express.Router();
 
 serviceRoutes.post("/addService", validation(newServiceSchema), async (req, res) => {
     try {
-        const { name, image, price } = req.body;
-        const updatedService = await serviceModel.findOneAndUpdate(
-            { name },
-            { name, image, price },
-            { upsert: true, new: true }
-        );
+        const { name, price } = req.body;
+        const existingService = await serviceModel.findOne({ name });
 
-        const message = updatedService._id ? "Service updated successfully" : "Service added successfully";
-        res.status(200).json({ message, updatedService });
+        if (existingService) {
+            return res.status(200).json({ message: "Service already exists", existingService });
+        }
+
+        const newService = await serviceModel.create({ name, price });
+        res.status(201).json({ message: "Service added successfully", newService });
     } catch (error) {
-        console.error("Error adding/updating service:", error);
-        res.status(500).json({ message: "An error occurred while adding/updating the service" });
+        console.error("Error adding service:", error);
+        res.status(500).json({ message: "An error occurred while adding the service" });
     }
 });
 
 serviceRoutes.patch("/updateService/:name", validation(updateServiceSchema), async (req, res) => {
     try {
         const search = req.params.name;
-        const { name, image, price } = req.body;
+        const { name, price } = req.body;
 
         const updatedService = await serviceModel.findOneAndUpdate(
-            { name:search },
-            { name, image , price },
+            { name: search },
+            { name, price },
             { new: true }
         );
 
