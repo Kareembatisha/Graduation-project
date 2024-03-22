@@ -2,14 +2,15 @@ import express from 'express';
 import { validation } from '../../validation/validation.js';
 import { newOrderSchema, updateOrderSchema } from './orderValidation.js';
 import orderModel from '../../../db/models/orderModel.js';
+import medicineModel from '../../../db/models/medicineModel.js';
 
 const orderRoutes = express.Router();
 
 orderRoutes.post("/addOrder", validation(newOrderSchema), async (req, res) => {
     try {
-        const { customerEmail, items, total } = req.body;
+        const { customerEmail, items, address, total } = req.body;
         let status = "pending";
-        const newOrder = await orderModel.create({ customerEmail, items, total, status });
+        const newOrder = await orderModel.create({ customerEmail, items, address, total, status });
         res.status(201).json({ message: "Order added successfully", newOrder });
     } catch (error) {
         console.error("Error adding order:", error);
