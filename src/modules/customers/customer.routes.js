@@ -13,7 +13,7 @@ const secretKey = process.env.JWT_SECRET_KEY
 const generateToken = (email)=>{
     return jwt.sign({email},secretKey);
     // return jwt.sign({id},secretKey,{expiresIn:"1h"});
-}
+} 
 
 customerRoutes.post("/signup", validation(newCustomerSchema), async (req, res) => {
     try {

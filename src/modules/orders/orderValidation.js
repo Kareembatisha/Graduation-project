@@ -9,7 +9,7 @@ export const newOrderSchema = Joi.object({
     customerEmail: Joi.string().required(),
     items: Joi.array().items(itemSchema.required()),
     address: Joi.string().required(),
-    total: Joi.number().forbidden(),
+    total: Joi.number().required(),
     status: Joi.string().valid("pending", "approved", "denied").default("pending").forbidden(),
 });
 

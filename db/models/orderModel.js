@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 
 const itemSchema = new mongoose.Schema({
-    name: { type: mongoose.Schema.Types.ObjectId , ref: 'Medicine'},
+    name: { type: String },
     quantity: { type: Number },
 });
 
 const orderSchema = new mongoose.Schema({
-    customerEmail: { type: mongoose.Schema.Types.ObjectId },
+    customerEmail: { type: String },
     items: [{ type: itemSchema }],
     address:{ type :String },
     total: { type: Number },
