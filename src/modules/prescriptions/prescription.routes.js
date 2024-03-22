@@ -1,34 +1,49 @@
 import express from 'express';
 import { validation } from '../../validation/validation.js';
-import { newPresriptionSchema } from './prescriptionValidation.js';
+import { newPresriptionSchema, updatePresriptionSchema } from './prescriptionValidation.js';
 import prescriptionModel from '../../../db/models/prescriptionModel.js';
 import customerModel from '../../../db/models/customerModel.js';
 
 const prescriptionRoutes = express.Router();
 
-prescriptionRoutes.post("/addPrescription/:id", validation(newPresriptionSchema), async (req, res) => {
+prescriptionRoutes.post("/addPrescription", validation(newPresriptionSchema), async (req, res) => {
     try {
-     const customer = await customerModel.findById(req.params.id);
-     if(!customer) {res.status(404).json({ message: "Customer not found" });}
-     const customerName = customer.name
-     const newPresription = await prescriptionModel.create({
-        customerName: customerName,
-        message:req.body.message
-     })
-     res.status(200).json({ message: "Prescription added successfully", newPresription});
+        const { customerEmail, message } = req.body;
+        const customer = await customerModel.findOne({ email: customerEmail });
+
+        if (!customer) {
+            return res.status(404).json({ message: "Customer not found" });
+        }
+
+        const existingPrescription = await prescriptionModel.findOne({ customerEmail });
+
+        if (existingPrescription) {
+            return res.status(200).json({ message: "Prescription already exists", existingPrescription });
+        }
+
+        const newPrescription = await prescriptionModel.create({
+            customerEmail,
+            message,
+            status: "pending"
+        });
+
+        res.status(200).json({ message: "Prescription added successfully", newPrescription });
     } catch (error) {
         console.error("Error adding Prescription:", error);
-        res.status(500).json({ message: "An error occurred while adding/updating the Prescription" });
+        res.status(500).json({ message: "An error occurred while adding the Prescription" });
     }
 });
 
-prescriptionRoutes.patch("/updatePrescription/:id", async (req, res) => {
+
+prescriptionRoutes.patch("/updatePrescription/:id", validation(updatePresriptionSchema), async (req, res) => {
     try {
-        const found = await prescriptionModel.findByIdAndUpdate(req.params.id,{
-            message: req.body.message
-        })
-        if (found) {
-            res.status(200).json({ message: "Prescription updated successfully", found });
+        const prescriptionId = req.params.id;
+        const { message } = req.body;
+
+        const updatedPrescription = await prescriptionModel.findByIdAndUpdate(prescriptionId, { message }, { new: true });
+
+        if (updatedPrescription) {
+            res.status(200).json({ message: "Prescription updated successfully", updatedPrescription });
         } else {
             res.status(404).json({ message: "Prescription not found" });
         }
@@ -40,11 +55,11 @@ prescriptionRoutes.patch("/updatePrescription/:id", async (req, res) => {
 
 prescriptionRoutes.delete("/deletePrescription/:id", async (req, res) => {
     try {
-        
-        const found = await prescriptionModel.findByIdAndDelete( req.params.id );
+        const prescriptionId = req.params.id;
+        const deletedPrescription = await prescriptionModel.findByIdAndDelete(prescriptionId);
 
-        if (found) {
-            res.status(200).json({ message: "Prescription deleted successfully", found });
+        if (deletedPrescription) {
+            res.status(200).json({ message: "Prescription deleted successfully", deletedPrescription });
         } else {
             res.status(404).json({ message: "Prescription not found" });
         }
@@ -69,18 +84,52 @@ prescriptionRoutes.get("/getAllPrescriptions", async (req, res) => {
     }
 });
 
-prescriptionRoutes.get("/getPrescriptionById/:id", async (req, res) => {
+prescriptionRoutes.get("/getUnansweredPrescriptions", async (req, res) => {
     try {
-        const found = await prescriptionModel.findById(req.params.id);
+        const unansweredPrescriptions = await prescriptionModel.find({ status: "pending" });
 
-        if (found) {
-            res.status(200).json({ message: "Prescription found", found });
+        if (unansweredPrescriptions.length > 0) {
+            res.status(200).json({ message: "Unanswered Prescriptions found", unansweredPrescriptions });
+        } else {
+            res.status(404).json({ message: "No Unanswered Prescriptions found" });
+        }
+    } catch (error) {
+        console.error("Error fetching Unanswered Prescriptions:", error);
+        res.status(500).json({ message: "An error occurred while fetching Unanswered Prescriptions" });
+    }
+});
+
+prescriptionRoutes.get("/getAllPrescriptionsByCustomerEmail/:email", async (req, res) => {
+    try {
+        const customerEmail = req.params.email;
+        const prescriptions = await prescriptionModel.find({ customerEmail });
+
+        if (prescriptions.length > 0) {
+            res.status(200).json({ message: "Prescriptions found for the customer", prescriptions });
+        } else {
+            res.status(404).json({ message: "No Prescriptions found for the customer" });
+        }
+    } catch (error) {
+        console.error("Error fetching Prescriptions by Customer Email:", error);
+        res.status(500).json({ message: "An error occurred while fetching Prescriptions" });
+    }
+});
+
+prescriptionRoutes.patch("/answerPrescription/:id", async (req, res) => {
+    try {
+        const prescriptionId = req.params.id;
+        const { message } = req.body;
+
+        const answeredPrescription = await prescriptionModel.findByIdAndUpdate(prescriptionId, { message, status: "answered" }, { new: true });
+
+        if (answeredPrescription) {
+            res.status(200).json({ message: "Prescription answered successfully", answeredPrescription });
         } else {
             res.status(404).json({ message: "Prescription not found" });
         }
     } catch (error) {
-        console.error("Error fetching Prescription:", error);
-        res.status(500).json({ message: "An error occurred while fetching the Prescription" });
+        console.error("Error answering Prescription:", error);
+        res.status(500).json({ message: "An error occurred while answering the Prescription" });
     }
 });
 
