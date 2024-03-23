@@ -28,7 +28,6 @@ prescriptionRoutes.post("/addPrescription", validation(newPresriptionSchema), as
     }
 });
 
-
 prescriptionRoutes.patch("/updatePrescription/:id", validation(updatePresriptionSchema), async (req, res) => {
     try {
         const prescriptionId = req.params.id;
@@ -112,9 +111,9 @@ prescriptionRoutes.get("/getAllPrescriptionsByCustomerEmail/:email", async (req,
 prescriptionRoutes.patch("/answerPrescription/:id", async (req, res) => {
     try {
         const prescriptionId = req.params.id;
-        const { message } = req.body;
+        const { answer } = req.body;
 
-        const answeredPrescription = await prescriptionModel.findByIdAndUpdate(prescriptionId, { message, status: "answered" }, { new: true });
+        const answeredPrescription = await prescriptionModel.findByIdAndUpdate(prescriptionId, { answer, status: "answered" , answeredAt: new Date()}, { new: true });
 
         if (answeredPrescription) {
             res.status(200).json({ message: "Prescription answered successfully", answeredPrescription });

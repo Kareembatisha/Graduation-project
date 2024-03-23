@@ -12,6 +12,8 @@ const orderSchema = new mongoose.Schema({
     total: { type: Number },
     status: { type: String },
     message: { type: String },
+    acceptedOrDeniedAt: { type: Date, default: null }
 });
 
+orderSchema.index({ acceptedOrDeniedAt: 1 }, { expireAfterSeconds: 86400 }); 
 export default mongoose.model('Order', orderSchema);
