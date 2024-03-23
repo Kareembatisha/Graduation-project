@@ -9,6 +9,7 @@ import serviceRoutes from './src/modules/services/service.routes.js';
 import cartRoutes from './src/modules/carts/cart.routes.js';
 import orderRoutes from './src/modules/orders/order.routes.js';
 import prescriptionRoutes from './src/modules/prescriptions/prescription.routes.js';
+import bodyParser from 'body-parser';
 
 initConnection();
 const server = express();
@@ -17,6 +18,7 @@ server.use(cors());
 
 server.use("/uploads", express.static("uploads"))
 server.use(express.json())
+server.use(bodyParser.json())
 server.use(medicineRoutes)
 server.use(categoryRoutes)
 server.use(customerRoutes)

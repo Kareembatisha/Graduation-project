@@ -6,7 +6,6 @@ export const newCategorySchema = Joi.object({
 })
 
 export const updateCategorySchema = Joi.object({
-    name: Joi.forbidden(),//متحطهمش فى الموديل بتاع ال update
-    image: Joi.string()
-
-})
+  name: Joi.string(),
+  image: Joi.string().optional(), // Allow image to be optional
+});
