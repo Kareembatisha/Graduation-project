@@ -79,10 +79,10 @@ orderRoutes.get("/getOrderById/:orderId", async (req, res) => {
     }
 });
 
-orderRoutes.get("/getAllOrdersByCustomerId/:customerEmail", async (req, res) => {
+orderRoutes.get("/getAllOrdersByCustomerId/:email", async (req, res) => {
     try {
-        const customerEmail = req.params.customerId;
-        const allOrders = await orderModel.find({ customerEmaill }).lean();
+        const customerEmail = req.params.email;
+        const allOrders = await orderModel.find({ customerEmail }).lean();
         if (allOrders.length > 0) {
             res.status(200).json({ message: "Orders found", allOrders });
         } else {
