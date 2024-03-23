@@ -94,7 +94,7 @@ prescriptionRoutes.get("/getUnansweredPrescriptions", async (req, res) => {
             res.status(404).json({ message: "No Unanswered Prescriptions found" });
         }
     } catch (error) {
-        console.error("Error fetching Unanswered Prescriptions:", error);
+        console.error("Error fetching Unanswered Prescriptions:", error); 
         res.status(500).json({ message: "An error occurred while fetching Unanswered Prescriptions" });
     }
 });
