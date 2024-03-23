@@ -10,7 +10,8 @@ const orderSchema = new mongoose.Schema({
     items: [{ type: itemSchema }],
     address:{ type :String },
     total: { type: Number },
-    status: { type: String }
+    status: { type: String },
+    message: { type: String },
 });
 
 export default mongoose.model('Order', orderSchema);

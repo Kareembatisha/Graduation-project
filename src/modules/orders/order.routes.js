@@ -98,7 +98,7 @@ orderRoutes.get("/getAllOrdersByCustomerId/:email", async (req, res) => {
 orderRoutes.patch("/acceptOrder/:orderId", async (req, res) => {
     try {
         const orderId = req.params.orderId;
-        const updatedOrder = await orderModel.findByIdAndUpdate(orderId, { status: "accepted" }, { new: true });
+        const updatedOrder = await orderModel.findByIdAndUpdate(orderId, { status: "accepted" ,message:"Order was accepted and will be shipped soon" }, { new: true });
         if (!updatedOrder) {
             return res.status(404).json({ message: "Order not found" });
         }
@@ -126,7 +126,7 @@ orderRoutes.patch("/acceptOrder/:orderId", async (req, res) => {
 orderRoutes.patch("/denyOrder/:orderId", async (req, res) => {
     try {
         const orderId = req.params.orderId;
-        const updatedOrder = await orderModel.findByIdAndUpdate(orderId, { status: "denied" }, { new: true });
+        const updatedOrder = await orderModel.findByIdAndUpdate(orderId, { status: "denied",message:"Sorry order was denied because of some technical issues" }, { new: true });
         if (updatedOrder) {
             res.status(200).json({ message: "Order denied successfully", updatedOrder });
         } else {
