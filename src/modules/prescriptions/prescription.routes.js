@@ -15,12 +15,6 @@ prescriptionRoutes.post("/addPrescription", validation(newPresriptionSchema), as
             return res.status(404).json({ message: "Customer not found" });
         }
 
-        const existingPrescription = await prescriptionModel.findOne({ customerEmail });
-
-        if (existingPrescription) {
-            return res.status(200).json({ message: "Prescription already exists", existingPrescription });
-        }
-
         const newPrescription = await prescriptionModel.create({
             customerEmail,
             message,
