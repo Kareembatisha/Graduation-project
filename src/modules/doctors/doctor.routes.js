@@ -11,8 +11,8 @@ const doctorRoutes = express.Router();
 const secretKey = process.env.JWT_SECRET_KEY
 
 const generateToken = (id)=>{
-    return jwt.sign({id},secretKey);
-    // return jwt.sign({id},secretKey,{expiresIn:"1h"});
+    // return jwt.sign({id},secretKey);
+     return jwt.sign({id},secretKey,{expiresIn:"1h"});
 }
 
 doctorRoutes.post("/doctor/signup", validation(newDoctorSchema), async (req, res) => {
