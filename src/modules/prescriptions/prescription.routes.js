@@ -104,7 +104,7 @@ prescriptionRoutes.get("/getAllPrescriptionsByCustomerEmail/:email", async (req,
             res.status(404).json({ message: "No Prescriptions found for the customer" });
         }
     } catch (error) {
-        console.error("Error fetching Prescriptions by Customer Email:", error);
+        console.error("Error fetching Prescriptions by Customer Email:", error);   
         res.status(500).json({ message: "An error occurred while fetching Prescriptions" });
     }
 });
