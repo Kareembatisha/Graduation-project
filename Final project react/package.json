@@ -1,0 +1,14 @@
+{
+  "name": "final-project-react",
+  "version": "1.0.0",
+  "description": "react app for final project",
+  "main": "index.jsx",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "create-react-app": "^5.0.1"
+  }
+}
