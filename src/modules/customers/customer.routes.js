@@ -11,14 +11,13 @@ const customerRoutes = express.Router();
 const secretKey = process.env.JWT_SECRET_KEY
 
 const generateToken = (email)=>{
-    // return jwt.sign({email},secretKey);
-     return jwt.sign({id},secretKey,{expiresIn:"1h"});
-} 
-
+    // return jwt.sign({email},secretKey); 
+    return jwt.sign({email},secretKey,{expiresIn:"1h"});
+}
 customerRoutes.post("/signup", validation(newCustomerSchema), async (req, res) => {
-    try {
+    try { 
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        const existingCustomer = await customerModel.findOne({ email: req.body.email });
+        const existingCustomer = await customerModel.findOne({ email: req.body.email }); 
         if (existingCustomer) {
             return res.status(400).json({ message: "Customer already registered" });
         }
@@ -29,7 +28,7 @@ customerRoutes.post("/signup", validation(newCustomerSchema), async (req, res) =
             password: hashedPassword,
             address: req.body.address,
             phone: req.body.phone
-        });
+        });          
 
         res.status(201).json({ message: "Customer added", newCustomer });
     } catch (error) {
@@ -142,7 +141,7 @@ customerRoutes.get("/getCustomerByEmail/:email", async (req, res) => {
         console.error("Error fetching customer by email:", error);
         return res.status(500).json({ message: "An error occurred while fetching the customer" });
     }
-});
+});  
 
 customerRoutes.get("/getAllCustomers", async (req, res) => {
     try {
@@ -152,7 +151,7 @@ customerRoutes.get("/getAllCustomers", async (req, res) => {
             return res.status(200).json({ message: "All customers", customers: found });
         } else {
             return res.status(404).json({ message: "There are no customers found" });
-        }
+        } 
     } catch (error) {
         console.error("Error fetching all customers:", error);
         return res.status(500).json({ message: "An error occurred while fetching all customers" });
