@@ -21,7 +21,6 @@ customerRoutes.post("/signup", validation(newCustomerSchema), async (req, res) =
         if (existingCustomer) {
             return res.status(400).json({ message: "Customer already registered" });
         }
-
         const newCustomer = await customerModel.create({
             name: req.body.name,
             email: req.body.email,

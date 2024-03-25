@@ -15,5 +15,7 @@ const orderSchema = new mongoose.Schema({
     acceptedOrDeniedAt: { type: Date, default: null }
 });
 
-orderSchema.index({ acceptedOrDeniedAt: 1 }, { expireAfterSeconds: 86400 }); 
+orderSchema.index({ acceptedOrDeniedAt: 1 }, { expireAfterSeconds: 60 }); 
+
 export default mongoose.model('Order', orderSchema);
+
